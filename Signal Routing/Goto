@@ -1,0 +1,63 @@
+-- V1.0a AR
+-- 31.12.2016 11:56:29 AR V1.0b
+-- 22.06.2017 09:14:19 AR V1.0c
+
+generic = {
+  parameter = {
+    name = 'A'
+  },
+
+  init = function(self)
+    block.setInputsPinCount(1)
+    block.setInputPinTypeRestrains(1, 'any')
+    block.setOutputsPinCount(0)
+    block.modifyFlags('SupressStopFunctionCall', true)
+  end,
+
+  open = function(self)
+    gui.add('Info', 'Info', 'Goto', 'Send signals to From blocks that have the\nspecified name')
+    gui.add('Edit', 'Name', 'Name')
+    gui.set('Name', 'Text', self.parameter.name)
+    gui.setSize()
+  end,
+
+  apply = function(self)
+    self.parameter.name = gui.get('Name', 'Text')
+  end,
+
+  close = function()
+  end,
+
+  avatar = function(self)
+    return block.getDefaultAvatar(0x5F, "'" .. self.parameter.name .. "'", [[
+      draw.line(
+        px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50)
+      )
+    ]])
+  end,
+
+  generate = function(self)
+    local source =
+      [==[
+        local block = {}
+
+        block.start = function()
+          if not routing then
+            routing = {}
+          end
+        end
+
+        block.step = function(a)
+          routing['NAME'] = a
+        end
+
+        return block
+      ]==]
+    local replaces = {
+      ['NAME'] = self.parameter.name
+    }
+    return string.gsub(source, '%a+', replaces)
+  end,
+
+}
+

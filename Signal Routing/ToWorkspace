@@ -1,0 +1,63 @@
+-- 12.08.2017 06:38:00 AR V1.0a
+
+block.setSize(51, 21)
+
+generic = {
+  parameter = {
+    name = 'A'
+  },
+
+  init = function(self)
+    block.setInputsPinCount(1)
+    block.setInputPinTypeRestrains(1, 'any')
+    block.setOutputsPinCount(0)
+    block.modifyFlags('SupressStartFunctionCall', true)
+  end,
+
+  open = function(self)
+    gui.add('Info', 'Info', 'To Workspace', 'Store signal at the end of simulation in token table under \'.workspace.\'')
+    gui.add('Edit', 'Name', 'Name')
+    gui.set('Name', 'Text', self.parameter.name)
+    gui.setSize()
+  end,
+
+  apply = function(self)
+    self.parameter.name = gui.get('Name', 'Text')
+  end,
+
+  close = function()
+  end,
+
+  avatar = function(self)
+    return block.getDefaultAvatar(0x5F, "'" .. self.parameter.name .. "'", [[
+      draw.line(
+        px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50)
+      )
+    ]])
+  end,
+
+  generate = function(self)
+    local source =
+      [==[
+        local block = {}
+
+        block.step = function(a)
+          block.data = a
+        end
+
+        block.stop = function()
+          if block.data then
+            token.set('.workspace.NAME', require('messagePack').pack(block.data))
+          end
+        end
+
+        return block
+      ]==]
+    local replaces = {
+      ['NAME'] = self.parameter.name
+    }
+    return string.gsub(source, '%a+', replaces)
+  end,
+
+}
+
