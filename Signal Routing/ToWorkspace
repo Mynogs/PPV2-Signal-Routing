@@ -1,4 +1,5 @@
 -- 12.08.2017 06:38:00 AR V1.0a
+-- 28.04.2018 07:26:56 AR V1.0b Add selection and filled draw
 
 block.setSize(51, 21)
 
@@ -30,6 +31,12 @@ generic = {
 
   avatar = function(self)
     return block.getDefaultAvatar(0x5F, "'" .. self.parameter.name .. "'", [[
+      draw.setColorA(1.0, 1.0, 1.0)
+      draw.setColorB(0.8, 0.8, 0.8)
+      draw.polygon(
+        px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50)
+      )
+      draw.setColorA(0.0, 0.0, 0.0)
       draw.line(
         px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50)
       )

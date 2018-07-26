@@ -1,6 +1,9 @@
 -- V1.0a AR
 -- 31.12.2016 11:56:29 AR V1.0b
 -- 22.06.2017 09:14:19 AR V1.0c
+-- 28.04.2018 07:26:56 AR V1.0d Add selection and filled draw
+-- 22.07.2018 15:14:24 AR V1.0d Correct avatars shadow
+-- 24.07.2018 16:11:14 AR V1.0e Add name
 
 generic = {
   parameter = {
@@ -8,6 +11,7 @@ generic = {
   },
 
   init = function(self)
+    block.needPPVersion(2, 0, 'm')
     block.setInputsPinCount(1)
     block.setInputPinTypeRestrains(1, 'any')
     block.setOutputsPinCount(0)
@@ -29,11 +33,22 @@ generic = {
   end,
 
   avatar = function(self)
-    return block.getDefaultAvatar(0x5F, "'" .. self.parameter.name .. "'", [[
-      draw.line(
-        px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50)
-      )
-    ]])
+
+    return block.getDefaultAvatar{
+      Type = 0x5F,
+      DrawSymbol = [[
+        draw.setColorA(1.0, 1.0, 1.0)
+        draw.setColorB(0.8, 0.8, 0.8)
+        draw.polygon(
+          px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50), 3
+        )
+        draw.setColorA(0.0, 0.0, 0.0)
+        draw.line(
+          px(0), py(50), px(25), py(0), px(100), py(0), px(100), py(100), px(25), py(100), px(0), py(50)
+        )
+      ]],
+      CenterTextSource = "'" .. self.parameter.name .. "'"
+    }
   end,
 
   generate = function(self)
